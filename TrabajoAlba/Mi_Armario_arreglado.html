@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mi Armario</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── LIGHT — revista de moda francesa ── */
+:root {
+  --bg: #FBF8F5;
+  --surface: #FFFFFF;
+  --surface2: #F7F3EF;
+  --surface3: #EFE9E3;
+  --accent: #C9956A;
+  --accent-light: #FDF4EC;
+  --accent-hover: #B8845A;
+  --text: #221A14;
+  --text-soft: #7A6A5E;
+  --text-muted: #B0A49A;
+  --border: #EAE3DC;
+  --border-strong: #CEC5BB;
+  --success: #5A9A74;
+  --danger: #C44A3E;
+  --chip-sel-bg: #221A14;
+  --chip-sel-text: #FBF8F5;
+  --btn-bg: #221A14;
+  --btn-text: #FBF8F5;
+  --radius: 12px;
+  --radius-sm: 7px;
+  --shadow: 0 1px 8px rgba(100,70,40,0.07);
+  --shadow-md: 0 4px 22px rgba(100,70,40,0.11);
+}
+/* ── DARK — atelier nocturno chic (cálido, NO tétrico) ── */
+[data-theme="dark"] {
+  --bg: #26201A;
+  --surface: #31281F;
+  --surface2: #3C3028;
+  --surface3: #473A2F;
+  --accent: #D4A574;
+  --accent-light: #3A2E22;
+  --accent-hover: #E0B888;
+  --text: #F5EEE6;
+  --text-soft: #B09A86;
+  --text-muted: #7A6A58;
+  --border: #3E322A;
+  --border-strong: #5A4A3A;
+  --success: #72BA8E;
+  --danger: #E07060;
+  --chip-sel-bg: #F5EEE6;
+  --chip-sel-text: #26201A;
+  --btn-bg: #F5EEE6;
+  --btn-text: #26201A;
+  --shadow: 0 1px 8px rgba(0,0,0,0.25);
+  --shadow-md: 0 4px 22px rgba(0,0,0,0.35);
+}
+/* explicit light always wins */
+[data-theme="light"] {
+  --bg: #FBF8F5; --surface: #FFFFFF; --surface2: #F7F3EF; --surface3: #EFE9E3;
+  --accent: #C9956A; --accent-light: #FDF4EC; --accent-hover: #B8845A;
+  --text: #221A14; --text-soft: #7A6A5E; --text-muted: #B0A49A;
+  --border: #EAE3DC; --border-strong: #CEC5BB;
+  --success: #5A9A74; --danger: #C44A3E;
+  --chip-sel-bg: #221A14; --chip-sel-text: #FBF8F5;
+  --btn-bg: #221A14; --btn-text: #FBF8F5;
+  --shadow: 0 1px 8px rgba(100,70,40,0.07); --shadow-md: 0 4px 22px rgba(100,70,40,0.11);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+}
+
+/* TOP BAR */
+.top-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  padding-top: env(safe-area-inset-top, 0px);
+  display: flex; align-items: center; justify-content: space-between;
+  height: calc(58px + env(safe-area-inset-top, 0px));
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px); z-index: 101;
+  background: var(--surface);
+}
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem; font-weight: 600; letter-spacing: 0.04em;
+  color: var(--text);
+}
+.logo em { font-style: normal; color: var(--accent); }
+.theme-btn {
+  background: none; border: 1px solid var(--border);
+  cursor: pointer; border-radius: 50%;
+  width: 34px; height: 34px; font-size: 0.95rem;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-soft); transition: border-color 0.2s;
+}
+.theme-btn:hover { border-color: var(--border-strong); }
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: var(--surface); border-top: 1px solid var(--border);
+  display: flex; padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.nav-btn {
+  flex: 1; border: none; background: none; cursor: pointer;
+  padding: 10px 4px 9px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  color: var(--text-muted); font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s;
+}
+.nav-btn.active { color: var(--text); }
+.nav-btn .icon { font-size: 1.25rem; }
+.nav-btn.active .nav-dot {
+  display: block; width: 3px; height: 3px; background: var(--accent);
+  border-radius: 50%; margin: 0 auto;
+}
+.nav-dot { display: none; }
+
+/* PAGES */
+.page { display: none; padding: 20px 20px; max-width: 540px; margin: 0 auto; }
+.page.active { display: block; }
+
+/* HEADINGS */
+.page-head { margin-bottom: 22px; padding-top: 14px; }
+.page-head h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem; font-weight: 600; line-height: 1.1; color: var(--text);
+}
+.page-head p { color: var(--text-muted); font-size: 0.82rem; margin-top: 4px; }
+
+/* CARDS */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px;
+  box-shadow: var(--shadow); margin-bottom: 12px;
+}
+.card-label {
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px;
+}
+
+/* FIELDS */
+.field { margin-bottom: 12px; }
+.field:last-child { margin-bottom: 0; }
+.field label { display: block; font-size: 0.75rem; font-weight: 500; color: var(--text-soft); margin-bottom: 5px; }
+.field input, .field select {
+  width: 100%; padding: 9px 13px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 0.875rem;
+  outline: none; transition: border-color 0.2s; appearance: none;
+}
+.field input:focus, .field select:focus { border-color: var(--border-strong); }
+.field input::placeholder { color: var(--text-muted); }
+
+/* CHIPS */
+.chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip {
+  padding: 6px 13px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--surface2);
+  font-size: 0.78rem; font-weight: 500; color: var(--text-soft);
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.chip:hover { border-color: var(--border-strong); }
+.chip.selected {
+  background: var(--chip-sel-bg); border-color: var(--chip-sel-bg);
+  color: var(--chip-sel-text);
+}
+.chip:active { transform: scale(0.97); }
+
+/* BUTTONS */
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 12px 20px;
+  background: var(--btn-bg); color: var(--btn-text);
+  border: none; border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif; font-size: 0.88rem; font-weight: 600;
+  cursor: pointer; transition: opacity 0.2s, transform 0.1s;
+  letter-spacing: 0.02em;
+}
+.btn:hover { opacity: 0.85; }
+.btn:active { transform: scale(0.99); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-ghost {
+  background: transparent; color: var(--btn-bg);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { border-color: var(--border-strong); opacity: 1; }
+.btn-accent { background: var(--accent); color: #FFF; }
+.btn-sm { padding: 7px 13px; font-size: 0.78rem; width: auto; }
+.btn-danger-soft { background: var(--surface2); color: var(--danger); border: 1px solid var(--border); }
+
+/* WEATHER WIDGET */
+.weather-widget {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 18px;
+  margin: 12px 0 0;
+  display: none;
+}
+.weather-top { display: flex; align-items: center; gap: 14px; }
+.weather-icon-big { font-size: 2.4rem; line-height: 1; }
+.weather-temps { flex: 1; }
+.weather-main-temp {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem; font-weight: 600; line-height: 1; color: var(--text);
+}
+.weather-cond { font-size: 0.8rem; color: var(--text-soft); margin-top: 2px; }
+.weather-loc-line { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
+.weather-meta {
+  display: flex; gap: 14px; margin-top: 12px;
+  padding-top: 10px; border-top: 1px solid var(--border);
+}
+.weather-meta-item { flex: 1; }
+.weather-meta-label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.weather-meta-val { font-size: 0.82rem; font-weight: 500; color: var(--text-soft); margin-top: 2px; }
+.weather-btn-row { margin-top: 10px; }
+
+/* RECOMMENDATION */
+.reco-wrap { margin-top: 18px; }
+.reco-label {
+  font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 6px;
+}
+.reco-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 600; line-height: 1.2;
+  color: var(--text); margin-bottom: 4px;
+}
+.reco-sub { font-size: 0.8rem; color: var(--text-soft); margin-bottom: 18px; }
+.outfit-list { display: flex; flex-direction: column; gap: 0; }
+.outfit-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 13px 0; border-bottom: 1px solid var(--border);
+}
+.outfit-item:last-child { border-bottom: none; }
+.outfit-icon-wrap {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--surface2); display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0; margin-top: 1px;
+}
+.outfit-texts { flex: 1; }
+.outfit-cat { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.outfit-prenda { font-size: 0.9rem; font-weight: 500; color: var(--text); margin-top: 2px; }
+.outfit-why { font-size: 0.75rem; color: var(--text-soft); margin-top: 2px; line-height: 1.4; }
+.consejo-row {
+  margin-top: 16px; padding: 13px 16px;
+  background: var(--accent-light);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--accent);
+  font-size: 0.8rem; color: var(--text-soft); line-height: 1.5;
+}
+
+/* LOADING */
+.loading-wrap { padding: 40px 0; text-align: center; }
+.spinner-ring {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  animation: spin 0.9s linear infinite; margin: 0 auto 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-label { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.04em; }
+
+/* ARMARIO STATS */
+.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 16px; }
+.stat-cell {
+  background: var(--surface2); border-radius: var(--radius-sm);
+  padding: 12px 8px; text-align: center;
+}
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 600; color: var(--text); line-height: 1;
+}
+.stat-lbl { font-size: 0.65rem; color: var(--text-muted); margin-top: 3px; letter-spacing: 0.04em; }
+
+/* FILTER TABS */
+.filter-row {
+  display: flex; gap: 6px; overflow-x: auto;
+  padding-bottom: 2px; margin-bottom: 14px; scrollbar-width: none;
+}
+.filter-row::-webkit-scrollbar { display: none; }
+.filter-tab {
+  padding: 5px 13px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--surface2);
+  font-size: 0.75rem; font-weight: 500; color: var(--text-soft);
+  cursor: pointer; white-space: nowrap; transition: all 0.15s;
+}
+.filter-tab.active { background: var(--chip-sel-bg); border-color: var(--chip-sel-bg); color: var(--chip-sel-text); }
+
+/* PRENDA CARDS */
+.prenda-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.prenda-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 14px 12px;
+  position: relative; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.prenda-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); }
+.p-icon { font-size: 1.6rem; margin-bottom: 8px; display: block; }
+.p-name { font-size: 0.85rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+.p-tipo { font-size: 0.72rem; color: var(--text-soft); margin-top: 3px; }
+.p-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
+.p-tag {
+  font-size: 0.65rem; padding: 2px 7px; border-radius: 999px;
+  background: var(--surface2); color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+.p-del {
+  position: absolute; top: 8px; right: 8px;
+  background: none; border: none; cursor: pointer;
+  font-size: 0.75rem; color: var(--text-muted); padding: 3px;
+  border-radius: 4px; display: none; transition: color 0.15s;
+}
+.prenda-card:hover .p-del { display: block; }
+.p-del:hover { color: var(--danger); }
+
+/* ADD FORM */
+.add-form {
+  background: var(--surface); border: 1px solid var(--border-strong);
+  border-radius: var(--radius); padding: 18px; margin-bottom: 14px; display: none;
+}
+.add-form.open { display: block; }
+.add-form-title {
+  font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text-soft); margin-bottom: 14px;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-actions { display: flex; gap: 8px; margin-top: 12px; }
+
+.profile-save-dock {
+  position: sticky; bottom: 78px; z-index: 20;
+  background: var(--bg); padding: 10px 0 12px;
+}
+.profile-save-dock .btn { min-height: 46px; box-shadow: var(--shadow-md); }
+/* PERFIL - RESUMEN */
+.perfil-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px; margin-bottom: 20px;
+}
+.perfil-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--surface3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; margin-bottom: 12px;
+}
+.perfil-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem; font-weight: 600; color: var(--text); margin-bottom: 10px;
+}
+.perfil-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 6px; }
+.perfil-pill {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.75rem; padding: 4px 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 999px; color: var(--text-soft);
+}
+.perfil-pill span { font-weight: 600; color: var(--text); }
+
+.empty-state { text-align: center; padding: 36px 20px; color: var(--text-muted); }
+.empty-icon { font-size: 2.2rem; margin-bottom: 10px; opacity: 0.5; }
+.empty-txt { font-size: 0.82rem; line-height: 1.5; }
+
+.error-box {
+  background: #FDF0EF; border: 1px solid #F0C8C5;
+  border-radius: var(--radius-sm); padding: 10px 14px;
+  color: var(--danger); font-size: 0.82rem; margin-top: 10px;
+}
+[data-theme="dark"] .error-box { background: #3A2420; border-color: #6A3830; color: var(--danger); }
+
+@media (max-width: 360px) {
+  .prenda-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="logo">Mi <em>Armario</em></div>
+  <button class="theme-btn" id="themeBtn" aria-label="Cambiar tema">
+    <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  </button>
+</div>
+
+<!-- ===== PAGE OUTFIT ===== -->
+<div class="page active" id="pageReco">
+  <div class="page-head">
+    <h1>¿Qué me pongo hoy?</h1>
+    <p>Tu stylist personal con inteligencia artificial</p>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Ubicación</div>
+    <div class="field" style="margin-bottom:10px">
+      <input id="cityInput" type="text" placeholder="O escribe una ciudad — ej. Madrid, Sevilla…">
+    </div>
+    <div class="weather-btn-row" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button class="btn btn-accent btn-sm" id="locateWeatherBtn" type="button">Usar mi ubicación</button>
+      <button class="btn btn-ghost btn-sm" id="fetchWeatherBtn" type="button">Buscar ciudad</button>
+    </div>
+    <p style="font-size:.68rem;color:var(--text-muted);margin-top:8px">Consulta datos meteorológicos actuales de Open‑Meteo. La ubicación requiere que permitas el acceso del navegador.</p>
+    <div class="weather-widget" id="weatherWidget">
+      <div class="weather-top">
+        <div class="weather-icon-big" id="wIcon">☀️</div>
+        <div class="weather-temps">
+          <div class="weather-main-temp" id="wTemp">—°C</div>
+          <div class="weather-cond" id="wDesc">—</div>
+          <div class="weather-loc-line" id="wLoc">—</div>
+        </div>
+      </div>
+      <div class="weather-meta">
+        <div class="weather-meta-item">
+          <div class="weather-meta-label">Mínima</div>
+          <div class="weather-meta-val" id="wMin">—°C</div>
+        </div>
+        <div class="weather-meta-item">
+          <div class="weather-meta-label">Máxima</div>
+          <div class="weather-meta-val" id="wMax">—°C</div>
+        </div>
+        <div class="weather-meta-item">
+          <div class="weather-meta-label">Viento</div>
+          <div class="weather-meta-val" id="wWind">—</div>
+        </div>
+        <div class="weather-meta-item">
+          <div class="weather-meta-label">Lluvia</div>
+          <div class="weather-meta-val" id="wRain">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Actividad de hoy</div>
+    <div class="chips" id="activityChips">
+      <div class="chip" data-val="ir a clase">Clase</div>
+      <div class="chip" data-val="ir al trabajo">Trabajo</div>
+      <div class="chip" data-val="hacer deporte">Deporte</div>
+      <div class="chip" data-val="salir con amigos">Amigos</div>
+      <div class="chip" data-val="quedarme en casa">En casa</div>
+      <div class="chip" data-val="cita romántica">Cita</div>
+      <div class="chip" data-val="ir de compras">Compras</div>
+      <div class="chip" data-val="evento formal">Formal</div>
+      <div class="chip" data-val="viaje o excursión">Viaje</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Estilo preferido</div>
+    <div class="chips" id="styleChips">
+      <div class="chip" data-val="casual">Casual</div>
+      <div class="chip" data-val="elegante">Elegante</div>
+      <div class="chip" data-val="deportivo">Deportivo</div>
+      <div class="chip" data-val="cómodo y relaxed">Cómodo</div>
+      <div class="chip" data-val="urbano streetwear">Urbano</div>
+      <div class="chip" data-val="minimalista">Minimalista</div>
+      <div class="chip" data-val="chic parisino">Chic</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Basar recomendación en</div>
+    <div class="chips">
+      <div class="chip selected" id="wardrobeYes">Mi armario</div>
+      <div class="chip" id="wardrobeNo">Sugerencias generales</div>
+    </div>
+  </div>
+
+  <button class="btn" id="recoBtn" style="margin-top:4px">Generar outfit</button>
+  <div id="recoError" style="display:none" class="error-box"></div>
+  <div id="recoResult"></div>
+</div>
+
+<!-- ===== PAGE ARMARIO ===== -->
+<div class="page" id="pageArmario">
+  <div class="page-head">
+    <h1>Mi Armario</h1>
+    <p>Registra tus prendas para recomendaciones precisas</p>
+  </div>
+
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-cell"><div class="stat-num" id="statTotal">0</div><div class="stat-lbl">Total</div></div>
+    <div class="stat-cell"><div class="stat-num" id="statSuperior">0</div><div class="stat-lbl">Superior</div></div>
+    <div class="stat-cell"><div class="stat-num" id="statInferior">0</div><div class="stat-lbl">Inferior</div></div>
+    <div class="stat-cell"><div class="stat-num" id="statCalzado">0</div><div class="stat-lbl">Calzado</div></div>
+  </div>
+
+  <button class="btn btn-ghost" id="toggleAddForm" style="margin-bottom:12px">+ Añadir prenda</button>
+
+  <div class="add-form" id="addForm">
+    <div class="add-form-title">Nueva prenda</div>
+    <div class="form-row">
+      <div class="field"><label>Nombre</label><input id="pNombre" placeholder="Ej: Camiseta blanca Oxford"></div>
+      <div class="field"><label>Color</label><input id="pColor" placeholder="Ej: Blanco roto"></div>
+    </div>
+    <div class="form-row">
+      <div class="field">
+        <label>Categoría</label>
+        <select id="pCategoria">
+          <option value="superior">Superior</option>
+          <option value="inferior">Inferior</option>
+          <option value="calzado">Calzado</option>
+          <option value="exterior">Exterior</option>
+          <option value="complemento">Complemento</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Tipo</label>
+        <select id="pTipo">
+          <option value="">— Tipo —</option>
+          <option value="camiseta">Camiseta</option>
+          <option value="camisa">Camisa</option>
+          <option value="polo">Polo</option>
+          <option value="jersey">Jersey</option>
+          <option value="sudadera">Sudadera</option>
+          <option value="top">Top</option>
+          <option value="pantalón largo">Pantalón largo</option>
+          <option value="pantalón corto">Pantalón corto</option>
+          <option value="vaqueros">Vaqueros</option>
+          <option value="falda">Falda</option>
+          <option value="vestido">Vestido</option>
+          <option value="leggings">Leggings</option>
+          <option value="zapatillas">Zapatillas</option>
+          <option value="zapatos">Zapatos</option>
+          <option value="botas">Botas</option>
+          <option value="sandalias">Sandalias</option>
+          <option value="abrigo">Abrigo</option>
+          <option value="chaqueta">Chaqueta</option>
+          <option value="cazadora">Cazadora</option>
+          <option value="bufanda">Bufanda</option>
+          <option value="gorro">Gorro</option>
+          <option value="guantes">Guantes</option>
+          <option value="cinturón">Cinturón</option>
+          <option value="bolso">Bolso</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="field">
+        <label>Temporada</label>
+        <select id="pTemporada">
+          <option value="todas">Todas</option>
+          <option value="verano">Verano</option>
+          <option value="invierno">Invierno</option>
+          <option value="primavera/otoño">Primavera / Otoño</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Estilo</label>
+        <select id="pEstilo">
+          <option value="casual">Casual</option>
+          <option value="elegante">Elegante</option>
+          <option value="deportivo">Deportivo</option>
+          <option value="cómodo">Cómodo</option>
+          <option value="urbano">Urbano</option>
+          <option value="minimalista">Minimalista</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-sm" id="savePrendaBtn">Guardar</button>
+      <button class="btn btn-ghost btn-sm" id="cancelAddBtn">Cancelar</button>
+    </div>
+  </div>
+
+  <div class="filter-row" id="filterRow">
+    <div class="filter-tab active" data-cat="todas">Todas</div>
+    <div class="filter-tab" data-cat="superior">Superior</div>
+    <div class="filter-tab" data-cat="inferior">Inferior</div>
+    <div class="filter-tab" data-cat="calzado">Calzado</div>
+    <div class="filter-tab" data-cat="exterior">Exterior</div>
+    <div class="filter-tab" data-cat="complemento">Complementos</div>
+  </div>
+
+  <div id="prendaList"></div>
+</div>
+
+<!-- ===== PAGE PERFIL ===== -->
+<div class="page" id="pagePerfil">
+  <div class="page-head">
+    <h1>Mi Perfil</h1>
+    <p>Tus preferencias personales de estilo</p>
+  </div>
+
+  <!-- RESUMEN VISUAL DEL PERFIL -->
+  <div id="perfilResumen" style="display:none" class="perfil-card">
+    <div class="perfil-avatar" id="perfilAvatar">👤</div>
+    <div class="perfil-name" id="perfilNombreResumen">—</div>
+    <div class="perfil-row" id="perfilPills"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Perfiles guardados</div>
+    <div class="field">
+      <label>Seleccionar perfil</label>
+      <select id="profileSelect"><option value="">Nuevo perfil</option></select>
+    </div>
+    <button class="btn btn-ghost btn-sm" id="newProfileBtn" type="button">+ Crear perfil nuevo</button>
+    <div id="profileList" style="margin-top:12px"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Datos básicos</div>
+    <div class="field"><label>Nombre</label><input id="profNombre" placeholder="¿Cómo te llamas?"></div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field"><label>Talla ropa</label>
+        <select id="profTalla">
+          <option value="">—</option>
+          <option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option>
+        </select>
+      </div>
+      <div class="field"><label>Talla zapato</label><input id="profZapato" placeholder="Ej: 42"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Estilo y colores</div>
+    <div class="field"><label>Colores favoritos</label><input id="profColores" placeholder="Ej: negro, blanco, azul marino, beige"></div>
+    <div class="field"><label>Prendas que nunca uses</label><input id="profExcluir" placeholder="Ej: faldas, gorros, corbatas"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Notas personales</div>
+    <div class="field"><label>Algo más que deba saber</label><input id="profNotas" placeholder="Ej: prefiero ropa holgada, soy sensible al frío…"></div>
+  </div>
+
+  <div class="profile-save-dock">
+    <button class="btn btn-accent" id="savePerfilBtn" type="button">Guardar perfil</button>
+    <div id="perfilSaved" role="status" aria-live="polite" style="display:none;margin-top:8px;text-align:center;font-size:0.8rem;color:var(--success);font-weight:600">Perfil guardado ✓</div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-page="pageReco">
+    <span class="icon">✦</span>Outfit<span class="nav-dot"></span>
+  </button>
+  <button class="nav-btn" data-page="pageArmario">
+    <span class="icon">◫</span>Armario<span class="nav-dot"></span>
+  </button>
+  <button class="nav-btn" data-page="pagePerfil">
+    <span class="icon">◯</span>Perfil<span class="nav-dot"></span>
+  </button>
+</nav>
+
+<script>
+(() => {
+  'use strict';
+
+  const $ = id => document.getElementById(id);
+  const safeParse = (value, fallback) => {
+    try { return JSON.parse(value) ?? fallback; } catch { return fallback; }
+  };
+  const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[ch]));
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+  let weatherData = null;
+  let useWardrobe = true;
+  let prendas = [];
+  let currentFilter = 'todas';
+  let activeProfileId = '';
+  let profiles = [];
+
+  const DEFAULT_GARMENTS = [
+    {nombre:'Camiseta blanca básica', color:'Blanco', categoria:'superior', tipo:'camiseta', temporada:'todas', estilo:'casual'},
+    {nombre:'Camiseta negra básica', color:'Negro', categoria:'superior', tipo:'camiseta', temporada:'todas', estilo:'minimalista'},
+    {nombre:'Camisa azul claro', color:'Azul claro', categoria:'superior', tipo:'camisa', temporada:'primavera/otoño', estilo:'elegante'},
+    {nombre:'Sudadera gris', color:'Gris', categoria:'superior', tipo:'sudadera', temporada:'invierno', estilo:'cómodo'},
+    {nombre:'Jersey beige', color:'Beige', categoria:'superior', tipo:'jersey', temporada:'invierno', estilo:'minimalista'},
+    {nombre:'Vaqueros azul oscuro', color:'Azul oscuro', categoria:'inferior', tipo:'vaqueros', temporada:'todas', estilo:'casual'},
+    {nombre:'Pantalón chino beige', color:'Beige', categoria:'inferior', tipo:'pantalón largo', temporada:'todas', estilo:'elegante'},
+    {nombre:'Pantalón negro recto', color:'Negro', categoria:'inferior', tipo:'pantalón largo', temporada:'todas', estilo:'minimalista'},
+    {nombre:'Bermudas vaqueras', color:'Azul', categoria:'inferior', tipo:'pantalón corto', temporada:'verano', estilo:'casual'},
+    {nombre:'Zapatillas blancas', color:'Blanco', categoria:'calzado', tipo:'zapatillas', temporada:'todas', estilo:'casual'},
+    {nombre:'Botas negras', color:'Negro', categoria:'calzado', tipo:'botas', temporada:'invierno', estilo:'urbano'},
+    {nombre:'Abrigo camel', color:'Camel', categoria:'exterior', tipo:'abrigo', temporada:'invierno', estilo:'elegante'},
+    {nombre:'Chaqueta vaquera', color:'Azul', categoria:'exterior', tipo:'chaqueta', temporada:'primavera/otoño', estilo:'urbano'},
+    {nombre:'Cinturón negro', color:'Negro', categoria:'complemento', tipo:'cinturón', temporada:'todas', estilo:'elegante'},
+    {nombre:'Bufanda beige', color:'Beige', categoria:'complemento', tipo:'bufanda', temporada:'invierno', estilo:'casual'}
+  ].map((p, i) => ({...p, id:'default-' + i}));
+
+  // Theme
+  function applyTheme(mode) {
+    document.documentElement.setAttribute('data-theme', mode);
+    $('iconMoon').style.display = mode === 'dark' ? 'none' : 'block';
+    $('iconSun').style.display = mode === 'dark' ? 'block' : 'none';
+  }
+  applyTheme(localStorage.getItem('armario-theme') || 'light');
+  $('themeBtn').addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    localStorage.setItem('armario-theme', next);
+  });
+
+  // Navigation
+  document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    btn.classList.add('active');
+    $(btn.dataset.page).classList.add('active');
+    if (btn.dataset.page === 'pageArmario') renderPrendas();
+    if (btn.dataset.page === 'pagePerfil') { renderProfileSelect(); renderProfiles(); renderPerfilResumen(); }
+  }));
+
+  // Selection chips
+  function setupSingleChips(id) {
+    const group = $(id);
+    group.querySelectorAll('.chip').forEach(chip => chip.addEventListener('click', () => {
+      group.querySelectorAll('.chip').forEach(item => item.classList.remove('selected'));
+      chip.classList.add('selected');
+    }));
+  }
+  setupSingleChips('activityChips');
+  setupSingleChips('styleChips');
+  $('wardrobeYes').addEventListener('click', () => {
+    $('wardrobeYes').classList.add('selected');
+    $('wardrobeNo').classList.remove('selected');
+    useWardrobe = true;
+  });
+  $('wardrobeNo').addEventListener('click', () => {
+    $('wardrobeNo').classList.add('selected');
+    $('wardrobeYes').classList.remove('selected');
+    useWardrobe = false;
+  });
+
+  // Meteorología real de Open-Meteo: coordenadas GPS o ciudad escrita.
+  const WC = {
+    0:['☀️','Despejado'],1:['🌤','Mayormente despejado'],2:['⛅','Parcialmente nublado'],3:['☁️','Nublado'],
+    45:['🌫','Niebla'],48:['🌫','Niebla con escarcha'],51:['🌦','Llovizna ligera'],53:['🌦','Llovizna'],
+    55:['🌧','Llovizna intensa'],61:['🌧','Lluvia ligera'],63:['🌧','Lluvia'],65:['🌧','Lluvia intensa'],
+    71:['❄️','Nieve ligera'],73:['❄️','Nieve'],75:['❄️','Nieve intensa'],80:['🌦','Chubascos'],
+    81:['🌧','Chubascos'],82:['⛈','Chubascos fuertes'],95:['⛈','Tormenta'],96:['⛈','Tormenta con granizo'],
+    99:['⛈','Tormenta fuerte con granizo']
+  };
+  const wIcon = code => (WC[code] || ['🌡','Tiempo variable'])[0];
+  const wDesc = code => (WC[code] || ['','Tiempo variable'])[1];
+
+  async function fetchWeatherCoords(latitude, longitude, locationName) {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,precipitation&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=1`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('No se han podido obtener los datos meteorológicos actuales.');
+    const data = await response.json();
+    if (!data.current || !data.daily) throw new Error('La fuente meteorológica no ha devuelto datos actuales.');
+    return {
+      temp:Math.round(data.current.temperature_2m),
+      feels:Math.round(data.current.apparent_temperature),
+      humidity:Math.round(data.current.relative_humidity_2m),
+      code:data.current.weather_code,
+      wind:Math.round(data.current.wind_speed_10m),
+      precip:data.current.precipitation,
+      rainChance:data.daily.precipitation_probability_max?.[0] ?? null,
+      maxT:Math.round(data.daily.temperature_2m_max[0]),
+      minT:Math.round(data.daily.temperature_2m_min[0]),
+      city:locationName || 'Tu ubicación actual',
+      observedAt:data.current.time || ''
+    };
+  }
+  async function fetchWeatherCity(city) {
+    const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=es&format=json`);
+    if (!geoRes.ok) throw new Error('No se ha podido consultar la ubicación.');
+    const geo = await geoRes.json();
+    if (!geo.results?.length) throw new Error('No encuentro esa ciudad. Comprueba el nombre.');
+    const place = geo.results[0];
+    return fetchWeatherCoords(place.latitude, place.longitude, `${place.name}${place.country ? ', ' + place.country : ''}`);
+  }
+  function showWeatherWidget(d) {
+    $('wIcon').textContent = wIcon(d.code);
+    $('wTemp').textContent = `${d.temp}°C`;
+    $('wDesc').textContent = `${wDesc(d.code)} · Sensación ${d.feels}°C`;
+    $('wLoc').textContent = `${d.city}${d.observedAt ? ' · Actualizado: ' + d.observedAt.replace('T',' ') : ''}`;
+    $('wMin').textContent = `${d.minT}°C`;
+    $('wMax').textContent = `${d.maxT}°C`;
+    $('wWind').textContent = `${d.wind} km/h`;
+    $('wRain').textContent = d.rainChance === null ? `${d.precip} mm ahora` : `${d.rainChance}% prob.`;
+    $('weatherWidget').style.display = 'block';
+  }
+  function setWeatherButtonBusy(button, busy, label) {
+    button.disabled = busy;
+    button.textContent = busy ? 'Consultando…' : label;
+  }
+  $('fetchWeatherBtn').addEventListener('click', async () => {
+    const city = $('cityInput').value.trim();
+    if (!city) { showErr('Escribe una ciudad o utiliza «Usar mi ubicación».'); return; }
+    const btn = $('fetchWeatherBtn');
+    setWeatherButtonBusy(btn, true, 'Buscar ciudad');
+    $('recoError').style.display = 'none';
+    try {
+      weatherData = await fetchWeatherCity(city);
+      showWeatherWidget(weatherData);
+    } catch (error) { showErr(error.message || 'No se ha podido consultar el tiempo.'); }
+    finally { setWeatherButtonBusy(btn, false, 'Buscar ciudad'); }
+  });
+  $('locateWeatherBtn').addEventListener('click', () => {
+    const btn = $('locateWeatherBtn');
+    $('recoError').style.display = 'none';
+    if (!navigator.geolocation) {
+      showErr('Este navegador no permite geolocalización. Escribe tu ciudad y pulsa «Buscar ciudad».');
+      return;
+    }
+    setWeatherButtonBusy(btn, true, 'Usar mi ubicación');
+    navigator.geolocation.getCurrentPosition(async position => {
+      try {
+        weatherData = await fetchWeatherCoords(
+          position.coords.latitude, position.coords.longitude, 'Tu ubicación actual'
+        );
+        showWeatherWidget(weatherData);
+      } catch (error) {
+        showErr(error.message || 'No se ha podido consultar el tiempo de tu ubicación.');
+      } finally {
+        setWeatherButtonBusy(btn, false, 'Usar mi ubicación');
+      }
+    }, error => {
+      const messages = {
+        1:'Has denegado el permiso de ubicación. Actívalo en los ajustes del navegador o busca tu ciudad.',
+        2:'No se ha podido determinar tu ubicación. Comprueba el GPS o busca tu ciudad.',
+        3:'La solicitud de ubicación ha tardado demasiado. Inténtalo de nuevo o busca tu ciudad.'
+      };
+      showErr(messages[error.code] || 'No se ha podido obtener tu ubicación.');
+      setWeatherButtonBusy(btn, false, 'Usar mi ubicación');
+    }, {enableHighAccuracy:true, timeout:12000, maximumAge:300000});
+  });
+
+  // Wardrobe persistence and defaults (only seed on first launch).
+  function loadPrendas() {
+    const stored = localStorage.getItem('armario-prendas');
+    if (stored === null) {
+      localStorage.setItem('armario-prendas', JSON.stringify(DEFAULT_GARMENTS));
+      return [...DEFAULT_GARMENTS];
+    }
+    return safeParse(stored, []);
+  }
+  function savePrendas(items) {
+    prendas = items;
+    localStorage.setItem('armario-prendas', JSON.stringify(items));
+  }
+  prendas = loadPrendas();
+  const CAT_ICON = {superior:'👕',inferior:'👖',calzado:'👟',exterior:'🧥',complemento:'🧣'};
+
+  function renderPrendas() {
+    prendas = loadPrendas();
+    const filtered = currentFilter === 'todas' ? prendas : prendas.filter(p => p.categoria === currentFilter);
+    $('statTotal').textContent = prendas.length;
+    $('statSuperior').textContent = prendas.filter(p => p.categoria === 'superior').length;
+    $('statInferior').textContent = prendas.filter(p => p.categoria === 'inferior').length;
+    $('statCalzado').textContent = prendas.filter(p => p.categoria === 'calzado').length;
+    if (!filtered.length) {
+      $('prendaList').innerHTML = `<div class="empty-state"><div class="empty-icon">◫</div><p class="empty-txt">${currentFilter === 'todas' ? 'Tu armario está vacío. Añade prendas cuando quieras.' : 'No hay prendas en esta categoría.'}</p></div>`;
+      return;
+    }
+    $('prendaList').innerHTML = `<div class="prenda-grid">${filtered.map(p => `
+      <div class="prenda-card">
+        <span class="p-icon">${CAT_ICON[p.categoria] || '👔'}</span>
+        <div class="p-name">${escapeHTML(p.nombre)}</div>
+        <div class="p-tipo">${escapeHTML(p.tipo)}${p.color && p.color !== 'sin especificar' ? ' · ' + escapeHTML(p.color) : ''}</div>
+        <div class="p-tags"><span class="p-tag">${escapeHTML(p.estilo)}</span><span class="p-tag">${escapeHTML(p.temporada)}</span></div>
+        <button class="p-del" data-delete="${escapeHTML(p.id)}" title="Eliminar" aria-label="Eliminar prenda">✕</button>
+      </div>`).join('')}</div>`;
+    $('prendaList').querySelectorAll('[data-delete]').forEach(button => button.addEventListener('click', () => {
+      savePrendas(loadPrendas().filter(item => String(item.id) !== button.dataset.delete));
+      renderPrendas();
+    }));
+  }
+  $('filterRow').querySelectorAll('.filter-tab').forEach(tab => tab.addEventListener('click', () => {
+    $('filterRow').querySelectorAll('.filter-tab').forEach(item => item.classList.remove('active'));
+    tab.classList.add('active');
+    currentFilter = tab.dataset.cat;
+    renderPrendas();
+  }));
+  $('toggleAddForm').addEventListener('click', () => {
+    const open = $('addForm').classList.toggle('open');
+    $('toggleAddForm').textContent = open ? '✕ Cancelar' : '+ Añadir prenda';
+  });
+  function clearGarmentForm() {
+    ['pNombre','pColor'].forEach(id => $(id).value = '');
+    $('pCategoria').value = 'superior';
+    $('pTipo').value = '';
+    $('pTemporada').value = 'todas';
+    $('pEstilo').value = 'casual';
+  }
+  function closeGarmentForm() {
+    clearGarmentForm();
+    $('addForm').classList.remove('open');
+    $('toggleAddForm').textContent = '+ Añadir prenda';
+  }
+  $('cancelAddBtn').addEventListener('click', closeGarmentForm);
+  $('savePrendaBtn').addEventListener('click', () => {
+    const nombre = $('pNombre').value.trim();
+    const tipo = $('pTipo').value;
+    if (!nombre || !tipo) { alert('Rellena el nombre y el tipo de prenda.'); return; }
+    const items = loadPrendas();
+    items.push({
+      id:uid(), nombre, color:$('pColor').value.trim() || 'sin especificar',
+      categoria:$('pCategoria').value, tipo, temporada:$('pTemporada').value, estilo:$('pEstilo').value
+    });
+    savePrendas(items);
+    closeGarmentForm();
+    renderPrendas();
+  });
+
+  // Multiple profiles, with migration from the old single-profile version.
+  function loadProfiles() {
+    const saved = localStorage.getItem('armario-perfiles');
+    if (saved !== null) return safeParse(saved, []);
+    const old = safeParse(localStorage.getItem('armario-perfil') || '{}', {});
+    const migrated = Object.values(old).some(value => String(value || '').trim())
+      ? [{id:uid(), ...old}] : [];
+    localStorage.setItem('armario-perfiles', JSON.stringify(migrated));
+    return migrated;
+  }
+  function saveProfiles() {
+    localStorage.setItem('armario-perfiles', JSON.stringify(profiles));
+  }
+  function clearProfileForm() {
+    ['profNombre','profZapato','profColores','profExcluir','profNotas'].forEach(id => $(id).value = '');
+    $('profTalla').value = '';
+  }
+  function getProfileForm() {
+    return {
+      nombre:$('profNombre').value.trim(), talla:$('profTalla').value,
+      zapato:$('profZapato').value.trim(), colores:$('profColores').value.trim(),
+      excluir:$('profExcluir').value.trim(), notas:$('profNotas').value.trim()
+    };
+  }
+  function loadProfileIntoForm(profile) {
+    clearProfileForm();
+    if (!profile) return;
+    $('profNombre').value = profile.nombre || '';
+    $('profTalla').value = profile.talla || '';
+    $('profZapato').value = profile.zapato || '';
+    $('profColores').value = profile.colores || '';
+    $('profExcluir').value = profile.excluir || '';
+    $('profNotas').value = profile.notas || '';
+  }
+  function renderProfileSelect() {
+    $('profileSelect').innerHTML = '<option value="">Nuevo perfil</option>' +
+      profiles.map(profile => `<option value="${escapeHTML(profile.id)}">${escapeHTML(profile.nombre || 'Perfil sin nombre')}</option>`).join('');
+    $('profileSelect').value = activeProfileId || '';
+  }
+  function renderProfiles() {
+    if (!profiles.length) {
+      $('profileList').innerHTML = '<p class="empty-txt" style="color:var(--text-muted)">Todavía no has creado ningún perfil.</p>';
+      return;
+    }
+    $('profileList').innerHTML = profiles.map(profile => `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--border)">
+        <span style="font-size:.82rem">${escapeHTML(profile.nombre || 'Perfil sin nombre')}</span>
+        <button class="btn btn-danger-soft btn-sm" type="button" data-profile-delete="${escapeHTML(profile.id)}">Eliminar</button>
+      </div>`).join('');
+    $('profileList').querySelectorAll('[data-profile-delete]').forEach(button => button.addEventListener('click', () => {
+      const profile = profiles.find(item => item.id === button.dataset.profileDelete);
+      if (!profile || !confirm(`¿Eliminar el perfil "${profile.nombre || 'Perfil sin nombre'}"?`)) return;
+      profiles = profiles.filter(item => item.id !== button.dataset.profileDelete);
+      if (activeProfileId === button.dataset.profileDelete) {
+        activeProfileId = '';
+        clearProfileForm();
+      }
+      saveProfiles();
+      renderProfileSelect(); renderProfiles(); renderPerfilResumen();
+    }));
+  }
+  function renderPerfilResumen() {
+    const profile = profiles.find(item => item.id === activeProfileId);
+    const summary = $('perfilResumen');
+    if (!profile) { summary.style.display = 'none'; return; }
+    summary.style.display = 'block';
+    $('perfilNombreResumen').textContent = profile.nombre || 'Mi perfil';
+    const pills = [];
+    if (profile.talla) pills.push(`<div class="perfil-pill">Talla <span>${escapeHTML(profile.talla)}</span></div>`);
+    if (profile.zapato) pills.push(`<div class="perfil-pill">Zapato <span>${escapeHTML(profile.zapato)}</span></div>`);
+    if (profile.colores) pills.push(`<div class="perfil-pill">🎨 <span>${escapeHTML(profile.colores)}</span></div>`);
+    if (profile.excluir) pills.push(`<div class="perfil-pill">No usar <span>${escapeHTML(profile.excluir)}</span></div>`);
+    if (profile.notas) pills.push(`<div class="perfil-pill">💬 <span>${escapeHTML(profile.notas)}</span></div>`);
+    $('perfilPills').innerHTML = pills.join('');
+  }
+  profiles = loadProfiles();
+  $('profileSelect').addEventListener('change', () => {
+    activeProfileId = $('profileSelect').value;
+    loadProfileIntoForm(profiles.find(profile => profile.id === activeProfileId));
+    renderPerfilResumen();
+  });
+  $('newProfileBtn').addEventListener('click', () => {
+    activeProfileId = '';
+    $('profileSelect').value = '';
+    clearProfileForm();
+    renderPerfilResumen();
+    $('profNombre').focus();
+  });
+  $('savePerfilBtn').addEventListener('click', () => {
+    const data = getProfileForm();
+    if (!data.nombre) { alert('Escribe un nombre para el perfil.'); $('profNombre').focus(); return; }
+    let savedMessage = 'Perfil guardado correctamente ✓';
+    if (activeProfileId) {
+      const index = profiles.findIndex(profile => profile.id === activeProfileId);
+      if (index >= 0) {
+        profiles[index] = {...profiles[index], ...data};
+        savedMessage = 'Cambios guardados ✓';
+      } else {
+        activeProfileId = uid();
+        profiles.push({id:activeProfileId, ...data});
+      }
+    } else {
+      activeProfileId = uid();
+      profiles.push({id:activeProfileId, ...data});
+    }
+    saveProfiles();
+    clearProfileForm();
+    renderProfileSelect(); renderProfiles(); renderPerfilResumen();
+    $('perfilSaved').textContent = savedMessage;
+    $('perfilSaved').style.display = 'block';
+    setTimeout(() => $('perfilSaved').style.display = 'none', 2200);
+  });
+
+  // Outfit generator: deterministic, local and actually usable without an AI API key.
+  const styleAliases = {
+    'cómodo y relaxed':['cómodo','casual'], 'urbano streetwear':['urbano','casual'],
+    'chic parisino':['elegante','minimalista']
+  };
+  function choose(items, predicate, fallbackPredicate = () => true) {
+    const matching = items.filter(predicate);
+    const pool = matching.length ? matching : items.filter(fallbackPredicate);
+    return pool[Math.floor(Math.random() * pool.length)] || null;
+  }
+  function generateOutfit() {
+    const activity = document.querySelector('#activityChips .chip.selected')?.dataset.val;
+    const style = document.querySelector('#styleChips .chip.selected')?.dataset.val;
+    if (!activity) throw new Error('Elige una actividad para hoy.');
+    if (!style) throw new Error('Elige tu estilo preferido.');
+    const profile = profiles.find(item => item.id === activeProfileId) || profiles[0] || {};
+    const all = loadPrendas();
+    const available = useWardrobe ? all : DEFAULT_GARMENTS;
+    if (useWardrobe && !available.length) throw new Error('Tu armario está vacío. Añade prendas o selecciona “Sugerencias generales”.');
+    const aliases = styleAliases[style] || [style];
+    const season = weatherData && weatherData.temp <= 12 ? 'invierno' :
+      weatherData && weatherData.temp >= 25 ? 'verano' : 'primavera/otoño';
+    const compatible = item => {
+      const seasonOK = item.temporada === 'todas' || item.temporada === season ||
+        (season === 'primavera/otoño' && item.temporada === 'primavera/otoño');
+      const styleOK = aliases.some(alias => item.estilo === alias) || item.estilo === 'casual';
+      const excluded = (profile.excluir || '').toLowerCase();
+      return seasonOK && styleOK && !(excluded && (item.tipo + ' ' + item.nombre).toLowerCase().includes(excluded));
+    };
+    const top = choose(available.filter(p => p.categoria === 'superior'), compatible);
+    const bottom = choose(available.filter(p => p.categoria === 'inferior'), compatible);
+    const shoes = choose(available.filter(p => p.categoria === 'calzado'), compatible);
+    if (!top || !bottom || !shoes) throw new Error('Faltan prendas de parte superior, inferior o calzado en tu armario.');
+    const cold = weatherData && weatherData.temp <= 16;
+    const rainy = weatherData && (weatherData.precip > 0.5 || [51,53,55,61,63,65,80,81,82,95,96].includes(weatherData.code));
+    const outer = cold ? choose(available.filter(p => p.categoria === 'exterior'), compatible) : null;
+    const extras = available.filter(p => p.categoria === 'complemento' && compatible(p)).slice(0, 2);
+    const colorNote = profile.colores ? `Prioriza tus colores favoritos (${profile.colores}).` : '';
+    const activityNote = activity === 'hacer deporte' ? 'Comprueba que las prendas permitan moverte con comodidad.' :
+      activity === 'evento formal' || activity === 'cita romántica' ? 'Cuida los detalles y mantén una combinación equilibrada.' :
+      'Mantén el conjunto cómodo y fácil de combinar.';
+    const outfit = {
+      titulo: `${style.charAt(0).toUpperCase() + style.slice(1)} para hoy`,
+      subtitulo: `${activity.charAt(0).toUpperCase() + activity.slice(1)} · ${weatherData ? weatherData.temp + '°C en ' + weatherData.city : 'sin datos meteorológicos'}`,
+      items:[
+        {icon:'👕',cat:'Parte superior',item:top},
+        {icon:'👖',cat:'Parte inferior',item:bottom},
+        {icon:'👟',cat:'Calzado',item:shoes},
+        ...(outer ? [{icon:'🧥',cat:'Capa exterior',item:outer}] : []),
+        ...(extras.length ? [{icon:'🧣',cat:'Complementos',item:extras[0]}] : [])
+      ],
+      advice:[activityNote, colorNote, rainy ? 'Lleva paraguas o una prenda resistente al agua.' : ''].filter(Boolean).join(' ')
+    };
+    return outfit;
+  }
+  function renderOutfit(outfit) {
+    $('recoResult').innerHTML = `
+      <div class="reco-wrap">
+        <div class="reco-label">Tu outfit recomendado</div>
+        <div class="reco-title">${escapeHTML(outfit.titulo)}</div>
+        <div class="reco-sub">${escapeHTML(outfit.subtitulo)}</div>
+        <div class="card" style="padding:0 18px"><div class="outfit-list">
+          ${outfit.items.map(row => `<div class="outfit-item">
+            <div class="outfit-icon-wrap">${row.icon}</div>
+            <div class="outfit-texts"><div class="outfit-cat">${escapeHTML(row.cat)}</div>
+            <div class="outfit-prenda">${escapeHTML(row.item.nombre)}</div>
+            <div class="outfit-why">${escapeHTML(row.item.color || '')} · ${escapeHTML(row.item.estilo || '')}</div></div>
+          </div>`).join('')}
+        </div></div>
+        <div class="consejo-row">${escapeHTML(outfit.advice)}</div>
+        <button class="btn btn-ghost" id="anotherOutfitBtn" style="margin-top:12px">Generar otro conjunto ↻</button>
+      </div>`;
+    $('anotherOutfitBtn').addEventListener('click', () => {
+      try { renderOutfit(generateOutfit()); } catch (error) { showErr(error.message); }
+    });
+  }
+  $('recoBtn').addEventListener('click', async () => {
+    $('recoError').style.display = 'none';
+    const city = $('cityInput').value.trim() || 'Madrid';
+    const btn = $('recoBtn');
+    btn.disabled = true; btn.textContent = 'Preparando outfit…';
+    try {
+      if (!weatherData) {
+        try {
+          weatherData = await fetchWeatherCity(city);
+          showWeatherWidget(weatherData);
+        } catch (weatherError) {
+          throw new Error('Antes de generar el outfit, consulta el tiempo con «Usar mi ubicación» o «Buscar ciudad». ' + (weatherError.message || ''));
+        }
+      }
+      renderOutfit(generateOutfit());
+      $('recoResult').scrollIntoView({behavior:'smooth',block:'nearest'});
+    } catch (error) {
+      $('recoResult').innerHTML = '';
+      showErr(error.message || 'No se ha podido generar el outfit.');
+    } finally { btn.disabled = false; btn.textContent = 'Generar outfit'; }
+  });
+
+  // Initial render
+  renderPrendas();
+  renderProfileSelect();
+  renderProfiles();
+  renderPerfilResumen();
+})();
+</script>
+</body>
+</html>
