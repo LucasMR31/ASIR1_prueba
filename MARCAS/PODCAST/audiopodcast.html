@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Listen to Special Episode</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</head>
+
+<body style="background-color: #d3d3cd;">
+
+  <nav class="navbar navbar-expand-sm navbar-light sticky-top shadow-sm" style="background-color: #ef8b3f;">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-black" href="#">Bengal Tigers Podcast</a>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link text-black" href="portada.html"><i class="bi bi-arrow-left"></i> Back to Homepage</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container my-5">
+    <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-sm bg-white">
+
+      <div class="col-lg-4 p-3 p-lg-5 pt-lg-3 text-center">
+        <img class="mb-4" src="imagenes/Podcast.PNG" alt="Podcast cover art"
+          style="max-width: 100%; height: auto; border-radius: 15px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+      </div>
+
+      <div class="col-lg-8 p-3 p-lg-5 pt-lg-3">
+        <span class="badge text-black mb-2"
+          style="background-color: #ef8b3f; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">SEASON
+          3 • EPISODE 1</span>
+        <h1 class="display-5 fw-bold lh-1 text-body-emphasis mb-3">THE PHP2Shell DISASTER AND AI DOMINATION</h1>
+        <p class="lead text-muted mb-4">How the PHP2Shell vulnerability caused a security crisis and what roles
+          artificial intelligence plays as both a defense tool and a threat in infrastructure control.</p>
+
+        <div class="bg-light p-4 rounded-3 border mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="small text-muted"><i class="bi bi-headphones"></i> 14,240 plays</span>
+            <span class="small text-muted"><i class="bi bi-clock"></i> 06:15 min</span>
+          </div>
+
+          <audio id="podcastAudio" controls class="w-100 mb-3">
+            <source src="audio/AudioPodcasteditado.MP3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+
+          <div class="d-flex gap-2 justify-content-center">
+            <button type="button" class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-skip-backward-fill"></i> -10s
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-skip-forward-fill"></i> +10s
+            </button>
+            <a href="audio/AudioPodcasteditado.MP3" download class="btn btn-sm"
+              style="color: #ef8b3f; border-color: #ef8b3f;">
+              <i class="bi bi-download"></i> Download MP3
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container my-5">
+    <div class="row">
+
+      <div class="col-md-7 mb-4">
+        <h3 class="mb-3"><i class="bi bi-list-ol" style="color: #ef8b3f;"></i> What will you learn in this episode?</h3>
+        <div class="list-group shadow-sm">
+          <div class="list-group-item list-group-item-action d-flex gap-3 py-3">
+            <span class="fw-bold" style="color: #ef8b3f;">00:00</span>
+            <div>
+              <h6 class="mb-0 fw-bold">Introduction to the debate</h6>
+              <p class="mb-0 opacity-75 text-sm">Overview of the PHP2Shell disaster and the power of artificial
+                intelligence.</p>
+            </div>
+          </div>
+          <div class="list-group-item list-group-item-action d-flex gap-3 py-3">
+            <span class="fw-bold" style="color: #ef8b3f;">01:00</span>
+            <div>
+              <h6 class="mb-0 fw-bold">The PHP2Shell Disaster</h6>
+              <p class="mb-0 opacity-75">Critical engine vulnerabilities and the role of system administrators.</p>
+            </div>
+          </div>
+          <div class="list-group-item list-group-item-action d-flex gap-3 py-3">
+            <span class="fw-bold" style="color: #ef8b3f;">02:40</span>
+            <div>
+              <h6 class="mb-0 fw-bold">Artificial Intelligence and Cybersecurity</h6>
+              <p class="mb-0 opacity-75">How AI helps discover code flaws, and the risks of hackers using it.</p>
+            </div>
+          </div>
+          <div class="list-group-item list-group-item-action d-flex gap-3 py-3">
+            <span class="fw-bold" style="color: #ef8b3f;">04:35</span>
+            <div>
+              <h6 class="mb-0 fw-bold">Is AI going to dominate the world?</h6>
+              <p class="mb-0 opacity-75">Will AI replace IT professionals or change the way system administrators work?
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-5 mb-4">
+        <h3 class="mb-3"><i class="bi bi-person-badge" style="color: #ef8b3f;"></i> Guests</h3>
+        <div class="card p-4 text-center shadow-sm">
+          <img src="imagenes/Invitados.png" class="rounded-circle mx-auto mb-3"
+            style="width: 120px; height: 120px; object-fit: cover;" alt="Guest photo">
+          <h4 class="card-title fw-bold">Lucas Martínez Rodríguez</h4>
+          <h4 class="card-title fw-bold text-muted fs-5">Steven Dario Intriago Madril</h4>
+          <p class="font-monospace" style="color: #ef8b3f;">AI Engineer / Cybersecurity Specialist</p>
+          <p class="card-text small text-muted">Specialists in cybersecurity, reverse engineering, and threat modeling
+            for high-scale enterprise platforms.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="p-4 text-black text-center mt-5" style="background-color: #ef8b3f;">
+    <p class="mb-0 fw-bold">Bengal Tigers Podcast © 2026 | All rights reserved</p>
+  </footer>
+
+</body>
+
+</html>
